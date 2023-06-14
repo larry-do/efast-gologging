@@ -14,6 +14,8 @@ import (
 	"time"
 )
 
+var config Config
+
 func LoadLoggingConfig(configFile string) {
 	log.Info().Msgf("Reading logging configuration...")
 	data, err := os.ReadFile(configFile)
@@ -21,16 +23,15 @@ func LoadLoggingConfig(configFile string) {
 		log.Fatal().Err(err).Msgf("Error loading logging configuration file")
 	}
 
-	var config Config
 	err = yaml.Unmarshal(data, &config)
 	if err != nil {
 		log.Fatal().Err(err).Msgf("Error parsing logging configuration file")
 	}
 
-	ConfigLogging(config)
+	configLogging()
 }
 
-func ConfigLogging(config Config) {
+func configLogging() {
 	zerolog.TimeFieldFormat = "2006-01-02 15:04:05"
 	//zerolog.TimeFieldFormat = zerolog.TimeFormatUnixMs
 	zerolog.SetGlobalLevel(config.getConvetedLogLevel())
