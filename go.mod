@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/gookit/color v1.5.3
 	github.com/rs/zerolog v1.29.1
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
 require (

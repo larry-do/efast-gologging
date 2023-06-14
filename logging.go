@@ -7,21 +7,22 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/rs/zerolog/pkgerrors"
+	"gopkg.in/natefinch/lumberjack.v2"
+	"io"
 	"os"
+	"path"
 	"strings"
 	"time"
 )
 
-func ConfigLogging(console bool) {
+func ConfigLogging(config Config) {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnixMs
-	zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	zerolog.SetGlobalLevel(config.getConvetedLogLevel())
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
-	log.Logger = log.With().
-		CallerWithSkipFrameCount(2).
-		Int("pid", os.Getpid()).
-		Logger()
 
-	if console {
+	var writers []io.Writer
+
+	if config.ConsoleLoggingEnabled {
 		output := zerolog.ConsoleWriter{
 			Out:        os.Stdout,
 			TimeFormat: time.RFC3339,
@@ -62,6 +63,22 @@ func ConfigLogging(console bool) {
 		output.PartsExclude = []string{
 			//zerolog.TimestampFieldName,
 		}
-		log.Logger = log.Output(output)
+		writers = append(writers, output)
 	}
+
+	if config.FileLoggingEnabled {
+		writers = append(writers, &lumberjack.Logger{
+			Filename:   path.Join(config.Directory, config.Filename),
+			MaxBackups: config.MaxBackups, // files
+			MaxSize:    config.MaxSize,    // megabytes
+			MaxAge:     config.MaxAge,     // days
+			Compress:   config.Compress,
+		})
+	}
+
+	multiWriters := io.MultiWriter(writers...)
+	log.Logger = zerolog.New(multiWriters).With().
+		CallerWithSkipFrameCount(2).
+		Int("pid", os.Getpid()).
+		Logger()
 }
