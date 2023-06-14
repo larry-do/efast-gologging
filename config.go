@@ -11,13 +11,12 @@ type Config struct {
 	FileLoggingEnabled    bool
 	GlobalLevel           string
 	EncodeLogsAsJson      bool
-	Directory             string
-	Filename              string
+	FilePath              string
 	MaxSize               int
 	MaxBackups            int
 	MaxAge                int
 	Compress              bool
-	LocalTime             bool
+	TimeZone              string
 }
 
 func (config Config) getConvetedLogLevel() zerolog.Level {
