@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-func LoadLogginConfig(configFile string) {
+func LoadLoggingConfig(configFile string) {
 	log.Info().Msgf("Reading logging configuration...")
 	data, err := os.ReadFile(configFile)
 	if err != nil {
