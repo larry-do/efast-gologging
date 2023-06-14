@@ -7,11 +7,28 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/rs/zerolog/pkgerrors"
 	"gopkg.in/natefinch/lumberjack.v2"
+	"gopkg.in/yaml.v3"
 	"io"
 	"os"
 	"strings"
 	"time"
 )
+
+func LoadLogginConfig(configFile string) {
+	log.Info().Msgf("Reading logging configuration...")
+	data, err := os.ReadFile(configFile)
+	if err != nil {
+		log.Fatal().Err(err).Msgf("Error loading logging configuration file")
+	}
+
+	var config Config
+	err = yaml.Unmarshal(data, &config)
+	if err != nil {
+		log.Fatal().Err(err).Msgf("Error parsing logging configuration file")
+	}
+
+	ConfigLogging(config)
+}
 
 func ConfigLogging(config Config) {
 	zerolog.TimeFieldFormat = "2006-01-02 15:04:05"

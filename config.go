@@ -7,16 +7,16 @@ import (
 )
 
 type Config struct {
-	ConsoleLoggingEnabled bool
-	FileLoggingEnabled    bool
-	GlobalLevel           string
-	EncodeLogsAsJson      bool
-	FilePath              string
-	MaxSize               int
-	MaxBackups            int
-	MaxAge                int
-	Compress              bool
-	TimeZone              string
+	ConsoleLoggingEnabled bool   `yaml:"console"`
+	FileLoggingEnabled    bool   `yaml:"file"`
+	GlobalLevel           string `yaml:"level"`
+	EncodeLogsAsJson      bool   `yaml:"json_format"`
+	FilePath              string `yaml:"file_path"`
+	MaxSize               int    `yaml:"max_size"`
+	MaxBackups            int    `yaml:"max_backups"`
+	MaxAge                int    `yaml:"max_age"`
+	Compress              bool   `yaml:"compress"`
+	TimeZone              string `yaml:"time_zone"`
 }
 
 func (config Config) getConvetedLogLevel() zerolog.Level {
